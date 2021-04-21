@@ -91,8 +91,13 @@ class ExtractPlaylist:
         path = self.dest + "/" + self.title
         if not os.path.exists(path):
             os.makedirs(path)
+        # copy songs
         for song in self.songs:
-            copy(song['url'],path)
+            try:
+                copy(song['url'].replace("file://",""),path)
+            except Exception as e:
+                traceback.print_exc()
+                self.Log("error: " + str(e) + " ... moving on")
 
 if __name__ == "__main__":
    main()
