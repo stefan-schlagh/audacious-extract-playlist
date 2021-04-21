@@ -65,21 +65,26 @@ class ExtractPlaylist:
     def extractPlaylistSongs(self):
         f = open(self.srcPath)
         content = f.read().split("\n")
+        f.close()
         #extract title
         self.title = unquote(content[0].replace("title=", ""))
         # extract songs
         songs = []
+        titles = []
         i=0
         for line in content:
             if('uri=' in line and not 'uri=' in content[i + 1]):
                 url = unquote(line.replace("uri=", ""))
                 title = os.path.splitext(os.path.basename(urlparse(url).path))[0]
-                songs.append({
-                    "url": url,
-                    "title": title
-                })
+                if not title in titles and not "Kopie" in title:
+                    titles.append(title)
+                    songs.append({
+                        "url": url,
+                        "title": title
+                    })
             i = i + 1
         self.songs = songs
+        self.songTitles = titles
 
     def copySongs(self):
         # create folder
